@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.infrastructure.inbound.web;
+package com.eduaircontrol.msusermanagement.infrastructure.web;
 
 import com.eduaircontrol.msusermanagement.application.TenantContext;
 import jakarta.servlet.FilterChain;

@@ -1,10 +1,10 @@
 package com.eduaircontrol.msusermanagement.application;
 
 import com.eduaircontrol.msusermanagement.application.page.PageResult;
-import com.eduaircontrol.msusermanagement.application.port.UserProfileRepository;
-import com.eduaircontrol.msusermanagement.domain.exception.ConflictException;
-import com.eduaircontrol.msusermanagement.domain.exception.NotFoundException;
-import com.eduaircontrol.msusermanagement.domain.exception.ValidationException;
+import com.eduaircontrol.msusermanagement.domain.port.out.UserProfileRepository;
+import com.eduaircontrol.msusermanagement.shared.exception.ConflictException;
+import com.eduaircontrol.msusermanagement.shared.exception.NotFoundException;
+import com.eduaircontrol.msusermanagement.shared.exception.ValidationException;
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
 import com.eduaircontrol.msusermanagement.domain.model.UserProfile;
 import java.util.UUID;

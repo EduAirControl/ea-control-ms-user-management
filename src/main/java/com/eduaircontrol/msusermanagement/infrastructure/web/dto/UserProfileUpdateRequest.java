@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto;
+package com.eduaircontrol.msusermanagement.infrastructure.web.dto;
 
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
 import jakarta.validation.constraints.Size;

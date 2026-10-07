@@ -1,11 +1,11 @@
-package com.eduaircontrol.msusermanagement.infrastructure.inbound.web;
+package com.eduaircontrol.msusermanagement.infrastructure.web;
 
 import com.eduaircontrol.msusermanagement.application.UserProfileService;
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
-import com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto.PageResponse;
-import com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto.UserProfileCreateRequest;
-import com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto.UserProfileResponse;
-import com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto.UserProfileUpdateRequest;
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.PageResponse;
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileCreateRequest;
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileResponse;
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileUpdateRequest;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

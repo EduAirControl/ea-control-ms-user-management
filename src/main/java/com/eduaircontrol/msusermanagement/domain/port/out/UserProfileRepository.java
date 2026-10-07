@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.application.port;
+package com.eduaircontrol.msusermanagement.domain.port.out;
 
 import com.eduaircontrol.msusermanagement.application.page.PageResult;
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;

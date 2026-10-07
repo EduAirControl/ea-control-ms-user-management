@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto;
+package com.eduaircontrol.msusermanagement.infrastructure.web.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

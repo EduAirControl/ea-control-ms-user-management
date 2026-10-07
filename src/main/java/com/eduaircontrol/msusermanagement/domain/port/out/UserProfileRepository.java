@@ -1,6 +1,6 @@
 package com.eduaircontrol.msusermanagement.domain.port.out;
 
-import com.eduaircontrol.msusermanagement.application.page.PageResult;
+import com.eduaircontrol.msusermanagement.domain.model.PageResult;
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
 import com.eduaircontrol.msusermanagement.domain.model.UserProfile;
 import java.util.Optional;

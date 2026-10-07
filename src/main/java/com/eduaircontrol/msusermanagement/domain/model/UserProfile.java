@@ -43,6 +43,9 @@ public class UserProfile {
     @Column(name = "user_id", nullable = false, updatable = false)
     private UUID userId;
 
+    @Column(name = "institution_id")
+    private UUID institutionId;
+
     @Column(name = "full_name", nullable = false, length = 150)
     private String fullName;
 

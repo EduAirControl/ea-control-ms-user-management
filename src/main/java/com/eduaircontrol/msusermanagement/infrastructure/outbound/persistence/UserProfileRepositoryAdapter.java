@@ -43,7 +43,7 @@ public class UserProfileRepositoryAdapter implements UserProfileRepository {
     }
 
     @Override
-    public PageResult<UserProfile> search(String query, RecordStatus status, int page, int limit) {
+    public PageResult<UserProfile> search(String query, RecordStatus status, UUID institutionId, int page, int limit) {
         Specification<UserProfile> specification = (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.isNull(root.get("deletedAt")));
@@ -55,6 +55,9 @@ public class UserProfileRepositoryAdapter implements UserProfileRepository {
             }
             if (status != null) {
                 predicates.add(cb.equal(root.get("status"), status));
+            }
+            if (institutionId != null) {
+                predicates.add(cb.equal(root.get("institutionId"), institutionId));
             }
             return cb.and(predicates.toArray(Predicate[]::new));
         };

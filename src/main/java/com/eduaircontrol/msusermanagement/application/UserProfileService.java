@@ -26,7 +26,7 @@ public class UserProfileService {
 
     @Transactional(readOnly = true)
     public PageResult<UserProfile> list(String query, RecordStatus status, int page, int limit) {
-        return userProfileRepository.search(query, status, page, limit);
+        return userProfileRepository.search(query, status, TenantContext.institutionId(), page, limit);
     }
 
     @Transactional(readOnly = true)
@@ -53,6 +53,7 @@ public class UserProfileService {
         }
         UserProfile profile = UserProfile.builder()
                 .userId(userId)
+                .institutionId(TenantContext.institutionId())
                 .fullName(requireText(fullName, "fullName"))
                 .phone(emptyToNull(phone))
                 .department(emptyToNull(department))

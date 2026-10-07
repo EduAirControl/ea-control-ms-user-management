@@ -16,5 +16,5 @@ public interface UserProfileRepository {
 
     boolean existsByUserId(UUID userId);
 
-    PageResult<UserProfile> search(String query, RecordStatus status, int page, int limit);
+    PageResult<UserProfile> search(String query, RecordStatus status, UUID institutionId, int page, int limit);
 }

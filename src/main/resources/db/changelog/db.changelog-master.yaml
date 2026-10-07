@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/changes/001-create-user-profiles.yaml
   - include:
       file: db/changelog/changes/002-add-user-profiles-constraints.yaml
+  - include:
+      file: db/changelog/changes/003-add-profile-institution.yaml

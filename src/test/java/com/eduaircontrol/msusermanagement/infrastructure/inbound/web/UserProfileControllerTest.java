@@ -167,4 +167,29 @@ class UserProfileControllerTest {
                         .header("Authorization", "Bearer " + userToken))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void listIsScopedByInstitutionHeader() throws Exception {
+        UUID institutionA = UUID.randomUUID();
+        UUID institutionB = UUID.randomUUID();
+
+        mockMvc.perform(post("/api/v1/users")
+                        .header("Authorization", "Bearer " + adminToken)
+                        .header("X-Institution-Id", institutionA.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":\"" + UUID.randomUUID() + "\",\"fullName\":\"Ada Lovelace\"}"))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/v1/users")
+                        .header("Authorization", "Bearer " + adminToken)
+                        .header("X-Institution-Id", institutionB.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.meta.total").value(0));
+
+        mockMvc.perform(get("/api/v1/users")
+                        .header("Authorization", "Bearer " + adminToken)
+                        .header("X-Institution-Id", institutionA.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.meta.total").value(1));
+    }
 }

@@ -13,6 +13,7 @@ public record UserProfileResponse(
         String department,
         String position,
         String locale,
+        String avatarUrl,
         RecordStatus status,
         Instant createdAt,
         Instant updatedAt) {
@@ -26,6 +27,7 @@ public record UserProfileResponse(
                 profile.getDepartment(),
                 profile.getPosition(),
                 profile.getLocale(),
+                profile.getAvatarUrl(),
                 profile.getStatus(),
                 profile.getCreatedAt(),
                 profile.getUpdatedAt());

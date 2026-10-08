@@ -61,6 +61,9 @@ public class UserProfile {
     @Column(length = 10)
     private String locale;
 
+    @Column(name = "avatar_url", length = 500)
+    private String avatarUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private RecordStatus status;

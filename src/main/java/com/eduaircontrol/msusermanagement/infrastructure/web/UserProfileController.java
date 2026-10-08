@@ -56,7 +56,7 @@ public class UserProfileController {
     @PostMapping
     public ResponseEntity<UserProfileResponse> create(@Valid @RequestBody UserProfileCreateRequest request) {
         var created = userProfileService.create(request.userId(), request.fullName(), request.phone(),
-                request.department(), request.position(), request.locale());
+                request.department(), request.position(), request.locale(), request.avatarUrl());
         return ResponseEntity.status(HttpStatus.CREATED).body(UserProfileResponse.from(created));
     }
 
@@ -64,7 +64,7 @@ public class UserProfileController {
     public UserProfileResponse update(@PathVariable UUID id,
             @Valid @RequestBody UserProfileUpdateRequest request) {
         var updated = userProfileService.update(id, request.fullName(), request.phone(),
-                request.department(), request.position(), request.locale(), request.status());
+                request.department(), request.position(), request.locale(), request.avatarUrl(), request.status());
         return UserProfileResponse.from(updated);
     }
 

@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.infrastructure.outbound.persistence;
+package com.eduaircontrol.msusermanagement.infrastructure.persistence;
 
 import com.eduaircontrol.msusermanagement.domain.model.UserProfile;
 import java.util.Optional;

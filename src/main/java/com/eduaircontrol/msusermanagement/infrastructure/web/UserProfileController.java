@@ -1,11 +1,11 @@
-package com.eduaircontrol.msusermanagement.infrastructure.inbound.web;
+package com.eduaircontrol.msusermanagement.infrastructure.web;
 
 import com.eduaircontrol.msusermanagement.application.UserProfileService;
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
-import com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto.PageResponse;
-import com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto.UserProfileCreateRequest;
-import com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto.UserProfileResponse;
-import com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto.UserProfileUpdateRequest;
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.PageResponse;
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileCreateRequest;
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileResponse;
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileUpdateRequest;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +56,7 @@ public class UserProfileController {
     @PostMapping
     public ResponseEntity<UserProfileResponse> create(@Valid @RequestBody UserProfileCreateRequest request) {
         var created = userProfileService.create(request.userId(), request.fullName(), request.phone(),
-                request.department(), request.position(), request.locale());
+                request.department(), request.position(), request.locale(), request.avatarUrl());
         return ResponseEntity.status(HttpStatus.CREATED).body(UserProfileResponse.from(created));
     }
 
@@ -64,7 +64,7 @@ public class UserProfileController {
     public UserProfileResponse update(@PathVariable UUID id,
             @Valid @RequestBody UserProfileUpdateRequest request) {
         var updated = userProfileService.update(id, request.fullName(), request.phone(),
-                request.department(), request.position(), request.locale(), request.status());
+                request.department(), request.position(), request.locale(), request.avatarUrl(), request.status());
         return UserProfileResponse.from(updated);
     }
 

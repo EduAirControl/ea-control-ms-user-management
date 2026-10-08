@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.domain.exception;
+package com.eduaircontrol.msusermanagement.shared.exception;
 
 public class NotFoundException extends RuntimeException {
 

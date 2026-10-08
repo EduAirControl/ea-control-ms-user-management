@@ -8,10 +8,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.eduaircontrol.msusermanagement.application.port.UserProfileRepository;
-import com.eduaircontrol.msusermanagement.domain.exception.ConflictException;
-import com.eduaircontrol.msusermanagement.domain.exception.NotFoundException;
-import com.eduaircontrol.msusermanagement.domain.exception.ValidationException;
+import com.eduaircontrol.msusermanagement.domain.port.out.UserProfileRepository;
+import com.eduaircontrol.msusermanagement.shared.exception.ConflictException;
+import com.eduaircontrol.msusermanagement.shared.exception.NotFoundException;
+import com.eduaircontrol.msusermanagement.shared.exception.ValidationException;
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
 import com.eduaircontrol.msusermanagement.domain.model.UserProfile;
 import java.time.Instant;
@@ -71,7 +71,7 @@ class UserProfileServiceTest {
         UUID userId = UUID.randomUUID();
         when(repository.existsByUserId(userId)).thenReturn(true);
 
-        assertThatThrownBy(() -> service.create(userId, "Ada", null, null, null, null))
+        assertThatThrownBy(() -> service.create(userId, "Ada", null, null, null, null, null))
                 .isInstanceOf(ConflictException.class);
         verify(repository, never()).save(any());
     }
@@ -83,11 +83,12 @@ class UserProfileServiceTest {
         when(repository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         UserProfile created = service.create(userId, "  Ada Lovelace  ", " 3001234567 ",
-                "  Systems  ", null, null);
+                "  Systems  ", null, null, "  https://img.example/ada.png  ");
 
         assertThat(created.getFullName()).isEqualTo("Ada Lovelace");
         assertThat(created.getPhone()).isEqualTo("3001234567");
         assertThat(created.getDepartment()).isEqualTo("Systems");
+        assertThat(created.getAvatarUrl()).isEqualTo("https://img.example/ada.png");
         assertThat(created.getStatus()).isEqualTo(RecordStatus.ACTIVE);
         assertThat(created.getDeletedAt()).isNull();
     }
@@ -97,7 +98,7 @@ class UserProfileServiceTest {
         UUID userId = UUID.randomUUID();
         when(repository.existsByUserId(userId)).thenReturn(false);
 
-        assertThatThrownBy(() -> service.create(userId, "  ", null, null, null, null))
+        assertThatThrownBy(() -> service.create(userId, "  ", null, null, null, null, null))
                 .isInstanceOf(ValidationException.class);
         verify(repository, never()).save(any());
     }
@@ -109,7 +110,7 @@ class UserProfileServiceTest {
         when(repository.findById(id)).thenReturn(Optional.of(existing));
         when(repository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        UserProfile updated = service.update(id, "Grace Hopper", null, null, null, null,
+        UserProfile updated = service.update(id, "Grace Hopper", null, null, null, null, null,
                 RecordStatus.INACTIVE);
 
         assertThat(updated.getFullName()).isEqualTo("Grace Hopper");

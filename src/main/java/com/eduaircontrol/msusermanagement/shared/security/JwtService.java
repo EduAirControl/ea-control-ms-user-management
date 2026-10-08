@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.infrastructure.security;
+package com.eduaircontrol.msusermanagement.shared.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

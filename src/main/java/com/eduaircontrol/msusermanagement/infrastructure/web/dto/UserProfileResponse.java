@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto;
+package com.eduaircontrol.msusermanagement.infrastructure.web.dto;
 
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
 import com.eduaircontrol.msusermanagement.domain.model.UserProfile;
@@ -13,6 +13,7 @@ public record UserProfileResponse(
         String department,
         String position,
         String locale,
+        String avatarUrl,
         RecordStatus status,
         Instant createdAt,
         Instant updatedAt) {
@@ -26,6 +27,7 @@ public record UserProfileResponse(
                 profile.getDepartment(),
                 profile.getPosition(),
                 profile.getLocale(),
+                profile.getAvatarUrl(),
                 profile.getStatus(),
                 profile.getCreatedAt(),
                 profile.getUpdatedAt());

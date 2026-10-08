@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.infrastructure.inbound.web;
+package com.eduaircontrol.msusermanagement.infrastructure.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
 import com.eduaircontrol.msusermanagement.domain.model.UserProfile;
-import com.eduaircontrol.msusermanagement.infrastructure.outbound.persistence.UserProfileJpaRepository;
-import com.eduaircontrol.msusermanagement.infrastructure.security.JwtService;
+import com.eduaircontrol.msusermanagement.infrastructure.persistence.UserProfileJpaRepository;
+import com.eduaircontrol.msusermanagement.shared.security.JwtService;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,9 @@
-package com.eduaircontrol.msusermanagement.infrastructure.inbound.web;
+package com.eduaircontrol.msusermanagement.infrastructure.web;
 
-import com.eduaircontrol.msusermanagement.domain.exception.ConflictException;
-import com.eduaircontrol.msusermanagement.domain.exception.NotFoundException;
-import com.eduaircontrol.msusermanagement.domain.exception.ValidationException;
-import com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto.ErrorResponse;
+import com.eduaircontrol.msusermanagement.shared.exception.ConflictException;
+import com.eduaircontrol.msusermanagement.shared.exception.NotFoundException;
+import com.eduaircontrol.msusermanagement.shared.exception.ValidationException;
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.ErrorResponse;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;

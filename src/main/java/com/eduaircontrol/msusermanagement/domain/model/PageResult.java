@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.application.page;
+package com.eduaircontrol.msusermanagement.domain.model;
 
 import java.util.List;
 

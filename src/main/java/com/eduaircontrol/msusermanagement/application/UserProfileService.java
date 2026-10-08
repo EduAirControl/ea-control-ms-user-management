@@ -1,10 +1,10 @@
 package com.eduaircontrol.msusermanagement.application;
 
-import com.eduaircontrol.msusermanagement.application.page.PageResult;
-import com.eduaircontrol.msusermanagement.application.port.UserProfileRepository;
-import com.eduaircontrol.msusermanagement.domain.exception.ConflictException;
-import com.eduaircontrol.msusermanagement.domain.exception.NotFoundException;
-import com.eduaircontrol.msusermanagement.domain.exception.ValidationException;
+import com.eduaircontrol.msusermanagement.domain.model.PageResult;
+import com.eduaircontrol.msusermanagement.domain.port.out.UserProfileRepository;
+import com.eduaircontrol.msusermanagement.shared.exception.ConflictException;
+import com.eduaircontrol.msusermanagement.shared.exception.NotFoundException;
+import com.eduaircontrol.msusermanagement.shared.exception.ValidationException;
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
 import com.eduaircontrol.msusermanagement.domain.model.UserProfile;
 import java.util.UUID;
@@ -44,7 +44,7 @@ public class UserProfileService {
     }
 
     public UserProfile create(UUID userId, String fullName, String phone, String department,
-            String position, String locale) {
+            String position, String locale, String avatarUrl) {
         if (userId == null) {
             throw new ValidationException("userId must not be null");
         }
@@ -59,13 +59,14 @@ public class UserProfileService {
                 .department(emptyToNull(department))
                 .position(emptyToNull(position))
                 .locale(emptyToNull(locale))
+                .avatarUrl(emptyToNull(avatarUrl))
                 .status(RecordStatus.ACTIVE)
                 .build();
         return userProfileRepository.save(profile);
     }
 
     public UserProfile update(UUID id, String fullName, String phone, String department,
-            String position, String locale, RecordStatus status) {
+            String position, String locale, String avatarUrl, RecordStatus status) {
         UserProfile profile = get(id);
         if (fullName != null) {
             profile.setFullName(requireText(fullName, "fullName"));
@@ -81,6 +82,9 @@ public class UserProfileService {
         }
         if (locale != null) {
             profile.setLocale(emptyToNull(locale));
+        }
+        if (avatarUrl != null) {
+            profile.setAvatarUrl(emptyToNull(avatarUrl));
         }
         if (status != null) {
             profile.setStatus(status);

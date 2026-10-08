@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.infrastructure.security;
+package com.eduaircontrol.msusermanagement.shared.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

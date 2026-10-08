@@ -1,6 +1,6 @@
-package com.eduaircontrol.msusermanagement.infrastructure.inbound.web;
+package com.eduaircontrol.msusermanagement.infrastructure.web;
 
-import com.eduaircontrol.msusermanagement.infrastructure.inbound.web.dto.HealthResponse;
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.HealthResponse;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;

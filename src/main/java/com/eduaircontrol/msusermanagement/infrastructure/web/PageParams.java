@@ -1,6 +1,6 @@
-package com.eduaircontrol.msusermanagement.infrastructure.inbound.web;
+package com.eduaircontrol.msusermanagement.infrastructure.web;
 
-import com.eduaircontrol.msusermanagement.domain.exception.ValidationException;
+import com.eduaircontrol.msusermanagement.shared.exception.ValidationException;
 
 final class PageParams {
 

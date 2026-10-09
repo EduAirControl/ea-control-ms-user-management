@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
 import com.eduaircontrol.msusermanagement.domain.model.UserProfile;
 import com.eduaircontrol.msusermanagement.infrastructure.persistence.UserProfileJpaRepository;
-import com.eduaircontrol.msusermanagement.shared.security.JwtService;
+import com.eduaircontrol.msusermanagement.shared.security.TestTokenMint;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class UserProfileControllerTest {
     private UserProfileJpaRepository repository;
 
     @Autowired
-    private JwtService jwtService;
+    private TestTokenMint jwtService;
 
     private String adminToken;
     private String userToken;

@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.infrastructure.web;
+package com.eduaircontrol.msusermanagement.infrastructure.inbound.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -75,6 +75,35 @@ class UserProfileControllerTest {
                         .content("{\"userId\":\"" + UUID.randomUUID() + "\",\"fullName\":\"Ada\"}"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error").value("FORBIDDEN"));
+    }
+
+    /**
+     * SUPER_ADMIN cuenta como administrador. Sin esto el gestor global podia otorgar el
+     * rol pero no usar la aplicacion.
+     */
+    @Test
+    void createAsSuperAdminReturns201() throws Exception {
+        String superAdminToken = jwtService.generateToken("sa@test.com", "SUPER_ADMIN");
+
+        mockMvc.perform(post("/api/v1/users")
+                        .header("Authorization", "Bearer " + superAdminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":\"" + UUID.randomUUID() + "\",\"fullName\":\"SA\"}"))
+                .andExpect(status().isCreated());
+    }
+
+    /**
+     * Detras del gateway la identidad llega por headers. Antes solo se reenviaba el
+     * primer rol, de modo que un usuario ADMIN+SUPER_ADMIN perdia SUPER_ADMIN al cruzarlo.
+     */
+    @Test
+    void createViaGatewayHeadersCarriesEveryRole() throws Exception {
+        mockMvc.perform(post("/api/v1/users")
+                        .header("X-User-Id", UUID.randomUUID().toString())
+                        .header("X-User-Roles", "ADMIN,SUPER_ADMIN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":\"" + UUID.randomUUID() + "\",\"fullName\":\"GW\"}"))
+                .andExpect(status().isCreated());
     }
 
     @Test

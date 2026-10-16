@@ -9,6 +9,6 @@ public record UserProfileUpdateRequest(
         @Size(max = 100) String department,
         @Size(max = 100) String position,
         @Size(max = 10) String locale,
-        @Size(max = 500) String avatarUrl,
+        @Size(max = 3_000_000) String avatarUrl,
         RecordStatus status) {
 }

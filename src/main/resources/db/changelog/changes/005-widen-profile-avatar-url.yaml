@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-widen-profile-avatar-url
+      author: eduaircontrol
+      comment: >
+        Amplia avatar_url a TEXT. Las apps envian la foto del perfil como
+        data-URL base64 (no hay file upload), muy por encima de los 500
+        caracteres del changeset 004; el @Size(max=500) de los DTO devolvia 400
+        al guardar cualquier avatar real.
+      changes:
+        - modifyDataType:
+            schemaName: user_management
+            tableName: user_profiles
+            columnName: avatar_url
+            newDataType: TEXT
+      rollback:
+        - modifyDataType:
+            schemaName: user_management
+            tableName: user_profiles
+            columnName: avatar_url
+            newDataType: VARCHAR(500)

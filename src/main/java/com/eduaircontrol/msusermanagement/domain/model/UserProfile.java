@@ -61,7 +61,7 @@ public class UserProfile {
     @Column(length = 10)
     private String locale;
 
-    @Column(name = "avatar_url", length = 500)
+    @Column(name = "avatar_url", columnDefinition = "text")
     private String avatarUrl;
 
     @Enumerated(EnumType.STRING)

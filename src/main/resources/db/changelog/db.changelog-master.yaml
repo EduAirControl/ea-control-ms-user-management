@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/changes/003-add-profile-institution.yaml
   - include:
       file: db/changelog/changes/004-add-profile-avatar-url.yaml
+  - include:
+      file: db/changelog/changes/005-widen-profile-avatar-url.yaml

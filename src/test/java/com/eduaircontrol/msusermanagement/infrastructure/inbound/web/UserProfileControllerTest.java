@@ -93,17 +93,35 @@ class UserProfileControllerTest {
     }
 
     /**
-     * Detras del gateway la identidad llega por headers. Antes solo se reenviaba el
-     * primer rol, de modo que un usuario ADMIN+SUPER_ADMIN perdia SUPER_ADMIN al cruzarlo.
+     * Un token con varios roles conserva todos al cruzar el servicio: el rol
+     * efectivo sale del JWT, no de un header de un solo valor.
      */
     @Test
-    void createViaGatewayHeadersCarriesEveryRole() throws Exception {
+    void multiRoleTokenKeepsEveryRole() throws Exception {
+        String multiRoleToken = TestTokenMint.mint(
+                UUID.randomUUID(), "saadmin@test.com", java.util.List.of("ADMIN", "SUPER_ADMIN"));
+
         mockMvc.perform(post("/api/v1/users")
-                        .header("X-User-Id", UUID.randomUUID().toString())
-                        .header("X-User-Roles", "ADMIN,SUPER_ADMIN")
+                        .header("Authorization", "Bearer " + multiRoleToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":\"" + UUID.randomUUID() + "\",\"fullName\":\"GW\"}"))
                 .andExpect(status().isCreated());
+    }
+
+    /**
+     * Regresion de R-001: un token USER acompañado de headers forjados de ADMIN
+     * sigue sin poder escribir. El unico rol efectivo es el del token.
+     */
+    @Test
+    void forgedAdminHeadersDoNotElevateAUserToken() throws Exception {
+        mockMvc.perform(post("/api/v1/users")
+                        .header("Authorization", "Bearer " + userToken)
+                        .header("X-User-Id", UUID.randomUUID().toString())
+                        .header("X-User-Role", "ADMIN")
+                        .header("X-User-Roles", "ADMIN,SUPER_ADMIN")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":\"" + UUID.randomUUID() + "\",\"fullName\":\"Spoof\"}"))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -198,26 +216,27 @@ class UserProfileControllerTest {
     }
 
     @Test
-    void listIsScopedByInstitutionHeader() throws Exception {
+    void listIsScopedByInstitutionClaim() throws Exception {
         UUID institutionA = UUID.randomUUID();
         UUID institutionB = UUID.randomUUID();
+        String tokenA = TestTokenMint.mint(
+                UUID.randomUUID(), "admin@test.com", java.util.List.of("ADMIN"), institutionA, null);
+        String tokenB = TestTokenMint.mint(
+                UUID.randomUUID(), "admin@test.com", java.util.List.of("ADMIN"), institutionB, null);
 
         mockMvc.perform(post("/api/v1/users")
-                        .header("Authorization", "Bearer " + adminToken)
-                        .header("X-Institution-Id", institutionA.toString())
+                        .header("Authorization", "Bearer " + tokenA)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":\"" + UUID.randomUUID() + "\",\"fullName\":\"Ada Lovelace\"}"))
                 .andExpect(status().isCreated());
 
         mockMvc.perform(get("/api/v1/users")
-                        .header("Authorization", "Bearer " + adminToken)
-                        .header("X-Institution-Id", institutionB.toString()))
+                        .header("Authorization", "Bearer " + tokenB))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.meta.total").value(0));
 
         mockMvc.perform(get("/api/v1/users")
-                        .header("Authorization", "Bearer " + adminToken)
-                        .header("X-Institution-Id", institutionA.toString()))
+                        .header("Authorization", "Bearer " + tokenA))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.meta.total").value(1));
     }

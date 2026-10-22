@@ -37,6 +37,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     /** Atributo de peticion con el campusId resuelto del JWT. */
     public static final String ATTR_CAMPUS_ID = "jwtCampusId";
 
+    /** Atributo de peticion con el userId resuelto del JWT (perfil propio). */
+    public static final String ATTR_USER_ID = "jwtUserId";
+
     private static final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
 
     private final JwtService jwtService;
@@ -52,6 +55,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
         try {
             JwtService.AuthenticatedUser user = jwtService.authenticate(token);
+            if (user.userId() != null) {
+                request.setAttribute(ATTR_USER_ID, user.userId());
+            }
             if (user.institutionId() != null) {
                 request.setAttribute(ATTR_INSTITUTION_ID, user.institutionId());
             }

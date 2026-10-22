@@ -67,12 +67,58 @@ class UserProfileControllerTest {
                 .andExpect(jsonPath("$.error").value("UNAUTHORIZED"));
     }
 
+    /**
+     * Un usuario normal no puede crear el perfil de otro userId: el ownership se
+     * valida en el controller (userId del token vs userId del body).
+     */
     @Test
-    void createAsUserReturns403() throws Exception {
+    void createAsUserForAnotherUserReturns403() throws Exception {
         mockMvc.perform(post("/api/v1/users")
                         .header("Authorization", "Bearer " + userToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":\"" + UUID.randomUUID() + "\",\"fullName\":\"Ada\"}"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("FORBIDDEN"));
+    }
+
+    /** Un usuario normal sí puede crear su propio perfil (HU-USER-001). */
+    @Test
+    void createAsUserForSelfReturns201() throws Exception {
+        UUID selfUserId = UUID.randomUUID();
+        String selfToken = TestTokenMint.mint(selfUserId, "user@test.com", java.util.List.of("USER"));
+
+        mockMvc.perform(post("/api/v1/users")
+                        .header("Authorization", "Bearer " + selfToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":\"" + selfUserId + "\",\"fullName\":\"Self\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.userId").value(selfUserId.toString()));
+    }
+
+    /** Un usuario normal edita su propio perfil. */
+    @Test
+    void updateAsUserOwnProfileReturns200() throws Exception {
+        UUID selfUserId = UUID.randomUUID();
+        String selfToken = TestTokenMint.mint(selfUserId, "user@test.com", java.util.List.of("USER"));
+        UserProfile saved = saveProfile(selfUserId, "Ada Lovelace");
+
+        mockMvc.perform(put("/api/v1/users/" + saved.getId())
+                        .header("Authorization", "Bearer " + selfToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fullName\":\"Ada L.\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fullName").value("Ada L."));
+    }
+
+    /** Un usuario normal no edita el perfil de otro usuario. */
+    @Test
+    void updateAsUserSomeoneElsesProfileReturns403() throws Exception {
+        UserProfile saved = saveProfile(UUID.randomUUID(), "Ada Lovelace");
+
+        mockMvc.perform(put("/api/v1/users/" + saved.getId())
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fullName\":\"Spoof\"}"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error").value("FORBIDDEN"));
     }

@@ -52,10 +52,8 @@ public class SecurityConfig {
                         // SUPER_ADMIN cuenta como administrador: si no, el gestor global
                         // podria dar el rol pero no usar la aplicacion. Sin esto un token
                         // solo-SUPER_ADMIN recibia 403 en todo lo que escribe.
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.POST, "/api/v1/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.PUT, "/api/v1/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        // POST y PUT de /api/v1/users quedan en authenticated(): el
+                        // ownership (perfil propio vs ADMIN) lo valida UserProfileController.
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.PATCH, "/api/v1/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .requestMatchers(

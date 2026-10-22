@@ -6,11 +6,15 @@ import com.eduaircontrol.msusermanagement.infrastructure.web.dto.PageResponse;
 import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileCreateRequest;
 import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileResponse;
 import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileUpdateRequest;
+import com.eduaircontrol.msusermanagement.shared.security.JwtAuthFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Endpoints de información de usuario bajo /api/v1/users (HU-USER-001).
- * Lectura para usuarios autenticados; escritura solo ADMIN (SecurityConfig).
+ * Lectura para usuarios autenticados. Escritura: ADMIN/SUPER_ADMIN sobre
+ * cualquier perfil; un usuario normal solo crea/edita el perfil de su propio
+ * userId (validado aqui, no en SecurityConfig).
  */
 @RestController
 @RequestMapping("/api/v1/users")
@@ -54,7 +60,9 @@ public class UserProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<UserProfileResponse> create(@Valid @RequestBody UserProfileCreateRequest request) {
+    public ResponseEntity<UserProfileResponse> create(@Valid @RequestBody UserProfileCreateRequest request,
+            Authentication authentication, HttpServletRequest httpRequest) {
+        assertSelfOrAdmin(authentication, httpRequest, request.userId());
         var created = userProfileService.create(request.userId(), request.fullName(), request.phone(),
                 request.department(), request.position(), request.locale(), request.avatarUrl());
         return ResponseEntity.status(HttpStatus.CREATED).body(UserProfileResponse.from(created));
@@ -62,7 +70,9 @@ public class UserProfileController {
 
     @PutMapping("/{id}")
     public UserProfileResponse update(@PathVariable UUID id,
-            @Valid @RequestBody UserProfileUpdateRequest request) {
+            @Valid @RequestBody UserProfileUpdateRequest request,
+            Authentication authentication, HttpServletRequest httpRequest) {
+        assertSelfOrAdmin(authentication, httpRequest, userProfileService.get(id).getUserId());
         var updated = userProfileService.update(id, request.fullName(), request.phone(),
                 request.department(), request.position(), request.locale(), request.avatarUrl(), request.status());
         return UserProfileResponse.from(updated);
@@ -72,5 +82,24 @@ public class UserProfileController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         userProfileService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * ADMIN/SUPER_ADMIN pueden escribir cualquier perfil. Un usuario normal solo
+     * el suyo: el userId del token (atributo {@code jwtUserId} del filtro) debe
+     * coincidir con el que referencia el perfil.
+     */
+    private void assertSelfOrAdmin(Authentication authentication, HttpServletRequest request, UUID ownerUserId) {
+        boolean admin = authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority())
+                        || "ROLE_SUPER_ADMIN".equals(a.getAuthority()));
+        if (admin) {
+            return;
+        }
+        Object raw = request.getAttribute(JwtAuthFilter.ATTR_USER_ID);
+        UUID current = raw instanceof UUID uuid ? uuid : null;
+        if (current == null || ownerUserId == null || !current.equals(ownerUserId)) {
+            throw new AccessDeniedException("Solo puede modificar su propio perfil");
+        }
     }
 }

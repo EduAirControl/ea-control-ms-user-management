@@ -91,6 +91,10 @@ public class UserProfile {
         updatedAt = Instant.now();
     }
 
+    public UUID getUserId() {
+        return userId;
+    }
+
     public boolean isDeleted() {
         return deletedAt != null;
     }

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.eduaircontrol.msusermanagement.infrastructure.web.dto.PageParams;
 
 /**
  * Endpoints de información de usuario bajo /api/v1/users (HU-USER-001).
@@ -43,19 +46,29 @@ public class UserProfileController {
             @RequestParam(name = "q", required = false) String query,
             @RequestParam(name = "status", required = false) RecordStatus status,
             @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "limit", defaultValue = "20") int limit) {
+            @RequestParam(name = "limit", defaultValue = "20") int limit,
+            Authentication authentication) {
+        if (!isAdmin(authentication)) {
+            throw new AccessDeniedException("Solo ADMIN/SUPER_ADMIN pueden listar perfiles");
+        }
         PageParams.validate(page, limit);
         return PageResponse.of(userProfileService.list(query, status, page, limit),
                 UserProfileResponse::from);
     }
 
     @GetMapping("/{id}")
-    public UserProfileResponse get(@PathVariable UUID id) {
+    public UserProfileResponse get(@PathVariable UUID id, Authentication authentication, HttpServletRequest request) {
+        if (!isAdmin(authentication) && !isOwner(authentication, request, id)) {
+            throw new AccessDeniedException("Solo puede ver su propio perfil");
+        }
         return UserProfileResponse.from(userProfileService.get(id));
     }
 
     @GetMapping("/by-user/{userId}")
-    public UserProfileResponse getByUserId(@PathVariable UUID userId) {
+    public UserProfileResponse getByUserId(@PathVariable UUID userId, Authentication authentication, HttpServletRequest request) {
+        if (!isAdmin(authentication) && !isOwner(authentication, request, userId)) {
+            throw new AccessDeniedException("Solo puede ver su propio perfil");
+        }
         return UserProfileResponse.from(userProfileService.getByUserId(userId));
     }
 
@@ -101,5 +114,18 @@ public class UserProfileController {
         if (current == null || ownerUserId == null || !current.equals(ownerUserId)) {
             throw new AccessDeniedException("Solo puede modificar su propio perfil");
         }
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority())
+                        || "ROLE_SUPER_ADMIN".equals(a.getAuthority()));
+    }
+
+    private boolean isOwner(Authentication authentication, HttpServletRequest request, UUID ownerUserId) {
+        if (authentication == null) return false;
+        Object raw = request.getAttribute(JwtAuthFilter.ATTR_USER_ID);
+        UUID current = raw instanceof UUID uuid ? uuid : null;
+        return current != null && current.equals(ownerUserId);
     }
 }

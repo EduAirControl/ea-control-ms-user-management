@@ -286,4 +286,94 @@ class UserProfileControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.meta.total").value(1));
     }
+
+    // G-05.6: GET /api/v1/users* authorization tests
+    @Test
+    void listAsUserReturns403() throws Exception {
+        mockMvc.perform(get("/api/v1/users")
+                        .header("Authorization", "Bearer " + userToken))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("FORBIDDEN"));
+    }
+
+    @Test
+    void listAsAdminReturns200() throws Exception {
+        mockMvc.perform(get("/api/v1/users")
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void listAsSuperAdminReturns200() throws Exception {
+        String superAdminToken = jwtService.generateToken("sa@test.com", "SUPER_ADMIN");
+        mockMvc.perform(get("/api/v1/users")
+                        .header("Authorization", "Bearer " + superAdminToken))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getByIdAsUserOwnProfileReturns200() throws Exception {
+        UUID selfUserId = UUID.randomUUID();
+        String selfToken = TestTokenMint.mint(selfUserId, "user@test.com", java.util.List.of("USER"));
+        UserProfile saved = saveProfile(selfUserId, "Self User");
+
+        mockMvc.perform(get("/api/v1/users/" + saved.getId())
+                        .header("Authorization", "Bearer " + selfToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fullName").value("Self User"));
+    }
+
+    @Test
+    void getByIdAsUserOtherProfileReturns403() throws Exception {
+        UserProfile saved = saveProfile(UUID.randomUUID(), "Other User");
+
+        mockMvc.perform(get("/api/v1/users/" + saved.getId())
+                        .header("Authorization", "Bearer " + userToken))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("FORBIDDEN"));
+    }
+
+    @Test
+    void getByIdAsAdminReturns200() throws Exception {
+        UserProfile saved = saveProfile(UUID.randomUUID(), "Ada Lovelace");
+
+        mockMvc.perform(get("/api/v1/users/" + saved.getId())
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fullName").value("Ada Lovelace"));
+    }
+
+    @Test
+    void getByUserIdAsUserOwnReturns200() throws Exception {
+        UUID selfUserId = UUID.randomUUID();
+        String selfToken = TestTokenMint.mint(selfUserId, "user@test.com", java.util.List.of("USER"));
+        saveProfile(selfUserId, "Self User");
+
+        mockMvc.perform(get("/api/v1/users/by-user/" + selfUserId)
+                        .header("Authorization", "Bearer " + selfToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fullName").value("Self User"));
+    }
+
+    @Test
+    void getByUserIdAsUserOtherReturns403() throws Exception {
+        UUID otherUserId = UUID.randomUUID();
+        saveProfile(otherUserId, "Other User");
+
+        mockMvc.perform(get("/api/v1/users/by-user/" + otherUserId)
+                        .header("Authorization", "Bearer " + userToken))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("FORBIDDEN"));
+    }
+
+    @Test
+    void getByUserIdAsAdminReturns200() throws Exception {
+        UUID otherUserId = UUID.randomUUID();
+        saveProfile(otherUserId, "Ada Lovelace");
+
+        mockMvc.perform(get("/api/v1/users/by-user/" + otherUserId)
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fullName").value("Ada Lovelace"));
+    }
 }

@@ -57,11 +57,19 @@ public class UserProfileController {
     }
 
     @GetMapping("/{id}")
-    public UserProfileResponse get(@PathVariable UUID id, Authentication authentication, HttpServletRequest request) {
-        if (!isAdmin(authentication) && !isOwner(authentication, request, id)) {
+    public UserProfileResponse get(
+            @PathVariable UUID id,
+            Authentication authentication,
+            HttpServletRequest request) {
+
+        var profile = userProfileService.get(id);
+
+        if (!isAdmin(authentication)
+                && !isOwner(authentication, request, profile.getUserId())) {
             throw new AccessDeniedException("Solo puede ver su propio perfil");
         }
-        return UserProfileResponse.from(userProfileService.get(id));
+
+        return UserProfileResponse.from(profile);
     }
 
     @GetMapping("/by-user/{userId}")

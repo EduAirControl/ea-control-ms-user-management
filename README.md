@@ -6,7 +6,8 @@ administra el perfil, referenciado por `userId`.
 
 - Spring Boot 4.0.5 / Java 17 — arquitectura hexagonal (ADR-009)
 - PostgreSQL 15 con esquema propio `user_management` (ADR-003), migraciones Liquibase (ADR-008)
-- JWT interino HS256 (mismo `jwt.secret` que el resto de servicios de negocio; ADR-006 pendiente)
+- Validates access tokens against the ms-security JWKS (**RS256**); the service never
+  issues tokens itself (ADR-006)
 - Puerto **3007**, Swagger UI en `/swagger-ui.html`, health en `/health`
 
 ## Endpoints
@@ -22,6 +23,18 @@ administra el perfil, referenciado por `userId`.
 
 `userId` referencia por valor a la identidad de `ms-security` (sin FK entre esquemas).
 Ciclo de vida `ACTIVE`/`INACTIVE` + soft delete independiente (§6/§7 del dominio).
+
+## Configuration
+
+Runtime configuration is provided through environment variables. Start from the
+template and adapt the values locally:
+
+```bash
+cp .env.example .env   # local only: .env and *.env are gitignored, never commit them
+```
+
+[`.env.example`](./.env.example) lists every variable: server port, PostgreSQL,
+`JWKS_URI` (ms-security JWKS endpoint) and CORS origins.
 
 ## Ejecutar
 

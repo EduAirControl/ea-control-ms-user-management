@@ -1,6 +1,7 @@
-package com.eduaircontrol.msusermanagement.shared.security;
+package com.eduaircontrol.msusermanagement.infrastructure.config;
 
 import com.eduaircontrol.msusermanagement.infrastructure.web.dto.ErrorResponse;
+import com.eduaircontrol.security.starter.filter.JwtAuthFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

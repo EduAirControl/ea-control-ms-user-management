@@ -1,7 +1,7 @@
 package com.eduaircontrol.msusermanagement.infrastructure.web;
 
-import com.eduaircontrol.msusermanagement.application.TenantContext;
-import com.eduaircontrol.msusermanagement.shared.security.JwtAuthFilter;
+import com.eduaircontrol.security.starter.tenant.TenantContext;
+import com.eduaircontrol.security.starter.filter.JwtAuthFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

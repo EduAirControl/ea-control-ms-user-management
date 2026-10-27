@@ -118,6 +118,7 @@
 			<url>https://maven.pkg.github.com/EduAirControl/ea-control-security-starter</url>
 		</repository>
 	</repositories>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

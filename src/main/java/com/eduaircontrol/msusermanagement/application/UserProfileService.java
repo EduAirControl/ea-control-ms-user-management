@@ -1,6 +1,7 @@
 package com.eduaircontrol.msusermanagement.application;
 
 import com.eduaircontrol.msusermanagement.domain.model.PageResult;
+import com.eduaircontrol.security.starter.tenant.TenantContext;
 import com.eduaircontrol.msusermanagement.domain.port.out.UserProfileRepository;
 import com.eduaircontrol.msusermanagement.shared.exception.ConflictException;
 import com.eduaircontrol.msusermanagement.shared.exception.NotFoundException;

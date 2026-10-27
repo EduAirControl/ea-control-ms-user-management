@@ -6,7 +6,7 @@ import com.eduaircontrol.msusermanagement.infrastructure.web.dto.PageResponse;
 import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileCreateRequest;
 import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileResponse;
 import com.eduaircontrol.msusermanagement.infrastructure.web.dto.UserProfileUpdateRequest;
-import com.eduaircontrol.msusermanagement.shared.security.JwtAuthFilter;
+import com.eduaircontrol.security.starter.filter.JwtAuthFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.UUID;

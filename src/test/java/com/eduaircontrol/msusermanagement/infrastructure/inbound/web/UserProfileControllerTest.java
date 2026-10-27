@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.eduaircontrol.msusermanagement.domain.model.RecordStatus;
 import com.eduaircontrol.msusermanagement.domain.model.UserProfile;
 import com.eduaircontrol.msusermanagement.infrastructure.persistence.UserProfileJpaRepository;
-import com.eduaircontrol.msusermanagement.shared.security.TestTokenMint;
+import com.eduaircontrol.msusermanagement.testutil.TestTokenMint;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

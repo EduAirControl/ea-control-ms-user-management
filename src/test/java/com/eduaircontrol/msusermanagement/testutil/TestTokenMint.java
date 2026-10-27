@@ -1,4 +1,4 @@
-package com.eduaircontrol.msusermanagement.shared.security;
+package com.eduaircontrol.msusermanagement.testutil;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
